@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Her Irish Story</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a1a0a;
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .floaters {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .floater {
+    position: absolute;
+    animation: floatUp linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.35; }
+    90% { opacity: 0.35; }
+    100% { transform: translateY(-20px) rotate(360deg); opacity: 0; }
+  }
+
+  .page {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    animation: fadeIn 0.9s ease;
+  }
+
+  .page.active { display: flex; flex-direction: column; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 44px 26px 64px;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(160deg, #0d2b0d 0%, #1a4a1a 45%, #0a1a0a 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 420px;
+    width: 100%;
+  }
+
+  .chapter-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #5a9e5a;
+    margin-bottom: 22px;
+    font-weight: 700;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 33px;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 26px;
+  }
+
+  .page-title em { color: #7ec87e; font-style: italic; }
+
+  .page-text {
+    font-size: 16px;
+    line-height: 1.95;
+    color: #c8e6c8;
+    margin-bottom: 32px;
+    font-weight: 300;
+    text-align: left;
+  }
+
+  .page-text.center { text-align: center; }
+  .page-text strong { color: #ffffff; font-weight: 700; }
+  .page-text em { color: #a8d8a8; font-style: italic; }
+
+  .card {
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(126,200,126,0.22);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 26px;
+    text-align: left;
+  }
+
+  .card-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 17.5px;
+    color: #ffffff;
+    line-height: 1.7;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .card-attr {
+    font-size: 11px;
+    color: #5a9e5a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .funny-card {
+    background: rgba(126,200,126,0.07);
+    border: 2px solid rgba(126,200,126,0.3);
+    border-radius: 18px;
+    padding: 26px;
+    margin-bottom: 26px;
+    text-align: center;
+  }
+
+  .funny-emoji { font-size: 50px; margin-bottom: 14px; display: block; }
+
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #2d7d2d, #4aaa4a);
+    color: white;
+    border: none;
+    padding: 16px 42px;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    box-shadow: 0 4px 22px rgba(45,125,45,0.35);
+  }
+
+  .btn:active { transform: scale(0.96); }
+
+  .progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(126,200,126,0.18);
+    transition: all 0.3s;
+  }
+
+  .dot.active { background: #7ec87e; transform: scale(1.4); }
+  .dot.done { background: rgba(126,200,126,0.45); }
+
+  .landscape {
+    width: 100%;
+    height: 185px;
+    background: linear-gradient(180deg, #5ba3d9 0%, #7ec0ee 28%, #7ec87e 28%, #2d7d2d 65%, #1a4a1a 100%);
+    border-radius: 18px;
+    margin-bottom: 26px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sun {
+    position: absolute;
+    top: 18px; right: 36px;
+    width: 44px; height: 44px;
+    background: #f9d949;
+    border-radius: 50%;
+    box-shadow: 0 0 30px #f9d949;
+  }
+
+  .tree1 { position: absolute; bottom: 50px; left: 22px; font-size: 34px; }
+  .tree2 { position: absolute; bottom: 54px; right: 22px; font-size: 26px; }
+
+  .divider {
+    width: 52px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #7ec87e, transparent);
+    margin: 22px auto;
+  }
+
+  .stamp-ireland {
+    display: inline-block;
+    border: 3px solid #7ec87e;
+    color: #7ec87e;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    padding: 8px 22px;
+    border-radius: 8px;
+    margin: 16px 0;
+    transform: rotate(-3deg);
+    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .final-letter {
+    background: rgba(126,200,126,0.06);
+    border-left: 3px solid #7ec87e;
+    border-radius: 0 18px 18px 0;
+    padding: 26px;
+    margin-bottom: 26px;
+    text-align: left;
+  }
+
+  .final-letter p {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    line-height: 2;
+    color: #c8e6c8;
+    font-style: italic;
+  }
+
+  .final-letter strong { color: #ffffff; font-weight: 700; font-style: normal; }
+  .final-letter em { color: #a8d8a8; }
+
+  .signature {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: #5a9e5a;
+    font-style: italic;
+    margin-top: 18px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="floaters" id="floaters"></div>
+
+<!-- PAGE 1: OPENING -->
+<div class="page active" id="page1">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p1"></div>
+      <div class="chapter-label">🍀 Her Irish Story</div>
+      <h1 class="page-title">This is a story about a girl who almost talked herself out of <em>everything.</em></h1>
+      <p class="page-text center">
+        Almost.<br><br>
+        She is quiet. She thinks too much.<br>
+        She has big beautiful eyes that see far more than she lets on.<br><br>
+        And somewhere inside her — stubborn and soft at the same time — lives a dream that simply refuses to die.<br><br>
+        <em>This was made for her. On the days it feels impossible.</em>
+      </p>
+      <button class="btn" onclick="go(2)">Begin 🍀</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: THE FEAR -->
+<div class="page" id="page2">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p2"></div>
+      <div class="chapter-label">🍀 Chapter One</div>
+      <h1 class="page-title">The Fear She Carries <em>Quietly</em></h1>
+      <p class="page-text">
+        It is not a loud fear.<br>
+        Not the kind she talks about over coffee.<br>
+        It is the kind that finds her in the quiet moments and whispers things she does not want to hear.<br><br>
+        <em>What if I never get there?<br>
+        What if I end up like everyone else?<br>
+        What if Ireland stays a dream and I become just another number?</em><br><br>
+        She sits with that fear alone.<br>
+        Because nobody around her seems to understand the weight of it.<br><br>
+        <strong>But here is what that fear actually means:</strong><br><br>
+        It means she wants something real.<br>
+        It means she was never going to be satisfied with ordinary.<br>
+        <em>Only the ones meant for something different feel it like this.</em>
+      </p>
+      <button class="btn" onclick="go(3)">Keep reading →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: THE DREAM -->
+<div class="page" id="page3">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p3"></div>
+      <div class="chapter-label">🍀 Chapter Two</div>
+      <h1 class="page-title">The Dream That <em>Found Her</em></h1>
+      <div class="landscape">
+        <div class="sun"></div>
+        <div class="tree1">🌳</div>
+        <div class="tree2">🌿</div>
+      </div>
+      <p class="page-text">
+        Green fields that go on longer than her worries.<br>
+        Cold air that smells like rain and old earth.<br>
+        Stone walls that have been standing longer than anyone's doubt.<br><br>
+        <strong>Ireland.</strong><br><br>
+        It did not arrive with a plan or a timeline.<br>
+        It arrived the way real things do — quietly, without permission, and refusing to leave.<br><br>
+        The fact that it is still there — still pulling at her after everything — is not nothing.<br><br>
+        <em>Dreams that stay are not accidents.<br>
+        They are destinations.</em>
+      </p>
+      <button class="btn" onclick="go(4)">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4: THE CROWD -->
+<div class="page" id="page4">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p4"></div>
+      <div class="chapter-label">🍀 Chapter Three</div>
+      <h1 class="page-title">Everyone Cheers. <em>Nobody Stays.</em></h1>
+      <p class="page-text">
+        She told people about Ireland.<br><br>
+        They smiled. They nodded warmly.<br>
+        <em>"That's amazing."<br>
+        "You should totally do it."<br>
+        "We're behind you."</em><br><br>
+        And then they went back to their lives.<br><br>
+        Nobody sat down with her.<br>
+        Nobody looked her in the eyes and said the thing she actually needed.<br><br>
+        <strong>Nobody said: I see you. You are capable. Without question. Without condition.</strong><br><br>
+        So she has been carrying this dream without a map and without a hand to hold.<br><br>
+        <em>Which makes what she has done with it even more remarkable.</em><br><br>
+        She is still here. Still going. Still wanting it.<br>
+        On her own.
+      </p>
+      <div class="card">
+        <p class="card-quote">"Not everyone who cheers for you will show up when it matters. That is not your failure. That is just the difference between people who talk and people who build."</p>
+        <p class="card-attr">— Something she deserves to know 🍀</p>
+      </div>
+      <button class="btn" onclick="go(5)">I need this →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5: THE BABY -->
+<div class="page" id="page5">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p5"></div>
+      <div class="chapter-label">🍀 Chapter Four</div>
+      <h1 class="page-title">The Proof She Has Been Carrying <em>All Along</em></h1>
+      <p class="page-text">
+        Before Ireland. Before the plan. Before any of it.<br><br>
+        Can we just stop for a moment?<br><br>
+        <strong>She is raising a child.</strong><br><br>
+        Every single day — on the tired days, the scared days, the days she does not feel like enough for herself — she wakes up and shows up completely for another human being.<br><br>
+        Without applause. Without someone telling her she is doing it right.<br>
+        She just does it. Because that is who she is.<br><br>
+        <em>That is not a small thing.</em><br>
+        That is everything.<br><br>
+        The strength she is afraid she does not have?<br>
+        <strong>She has been using it every single morning without realising it.</strong><br><br>
+        A woman who does that does not end up a number.<br>
+        A woman who does that ends up exactly where she dreamed of going.
+      </p>
+      <div class="card">
+        <p class="card-quote">"She does not need to find the courage to get to Ireland. She has been spending it every day. She just has not been counting it."</p>
+        <p class="card-attr">— The truth, plainly 🍀</p>
+      </div>
+      <button class="btn" onclick="go(6)">Keep going →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 6: SEXY MOMMA -->
+<div class="page" id="page6">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p6"></div>
+      <div class="chapter-label">🍀 A Brief Interruption</div>
+      <h1 class="page-title">An Important <em>Official Statement</em></h1>
+      <div class="funny-card">
+        <span class="funny-emoji">😏</span>
+        <p class="page-text center" style="color:#c8e6c8; margin-bottom:12px;">
+          We pause this very sincere and emotional story for an urgent announcement from headquarters.
+        </p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:27px; color:#7ec87e; line-height:1.3; margin-bottom:12px;">
+          Megan is, officially,<br>a <em>Sexy Momma.</em>
+        </h2>
+        <p class="page-text center" style="font-size:13.5px; color:#a8d8a8; margin-bottom:0;">
+          This has been confirmed by a reliable and slightly biased source.<br>
+          We now return to your regularly scheduled feelings. 🍀
+        </p>
+      </div>
+      <button class="btn" onclick="go(7)">Okay okay 😂 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 7: THOSE EYES -->
+<div class="page" id="page7">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p7"></div>
+      <div class="chapter-label">🍀 Chapter Five</div>
+      <h1 class="page-title">Those <em>Eyes</em></h1>
+      <p class="page-text">
+        She has these eyes.<br><br>
+        Big. Still. Watching everything from a place of quiet.<br>
+        The kind of eyes that notice the things most people walk right past.<br>
+        The kind that hold entire worlds behind them without saying a word.<br><br>
+        <strong>Eyes like that were made to see Ireland.</strong><br><br>
+        Morning mist settling soft over green hills.<br>
+        The Atlantic wild and grey and ancient against the cliffs.<br>
+        A countryside so green it barely seems real.<br><br>
+        <em>That view has been waiting for her eyes specifically.</em><br><br>
+        Not for someone more ready.<br>
+        Not for someone less afraid.<br>
+        For her. Exactly as she is. Right now.
+      </p>
+      <button class="btn" onclick="go(8)">Almost there →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 8: YOU ARE ENOUGH -->
+<div class="page" id="page8">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p8"></div>
+      <div class="chapter-label">🍀 Chapter Six</div>
+      <h1 class="page-title">She Is Enough. <em>She Has Always Been Enough.</em></h1>
+      <p class="page-text">
+        On the hard days she wonders if she is falling behind.<br>
+        If other people are moving faster. If the distance to Ireland is growing.<br>
+        If she is somehow doing all of this wrong.<br><br>
+        <strong>She is not falling behind.</strong><br><br>
+        She is raising a child beautifully.<br>
+        She is keeping a dream alive without the support she deserves.<br>
+        She is doing the quiet unglamorous work that nobody claps for.<br><br>
+        <em>That is not someone who is failing.<br>
+        That is someone who is building something real.</em><br><br>
+        Slowly. Steadily. Without the recognition she has earned.<br><br>
+        <strong>She is enough today.<br>
+        She was enough yesterday.<br>
+        She will be enough when she lands in Ireland.<br>
+        She has always, always been enough.</strong>
+      </p>
+      <button class="btn" onclick="go(9)">One more →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 9: IRELAND IS WHEN -->
+<div class="page" id="page9">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="progress" id="p9"></div>
+      <div class="chapter-label">🍀 Chapter Seven</div>
+      <h1 class="page-title">Ireland Is Not an <em>If.</em><br>It Never Was.</h1>
+      <div class="landscape">
+        <div class="sun"></div>
+        <div class="tree1">🌳</div>
+        <div class="tree2">🌿</div>
+      </div>
+      <p class="page-text">
+        It will not look exactly how she imagined.<br>
+        The route will surprise her. The timing will be unexpected.<br>
+        Something will happen that she could not have planned for.<br><br>
+        <strong>And she will get there anyway.</strong><br><br>
+        Because she is the kind of person who does not stop.<br>
+        Even when she thinks she has stopped — she has not stopped.<br>
+        She is still dreaming it. Still wanting it. Still here.<br><br>
+        <em>That is not someone Ireland says no to.</em><br><br>
+        That is someone Ireland has been waiting for.
+      </p>
+      <button class="btn" onclick="go(10)">The ending 🍀</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 10: FINAL -->
+<div class="page" id="page10">
+  <div class="hero" style="background: linear-gradient(160deg, #0d2b0d 0%, #1a5a1a 50%, #0d2b0d 100%);">
+    <div class="hero-content">
+      <div class="progress" id="p10"></div>
+      <div class="chapter-label">🍀 For Megan</div>
+      <h1 class="page-title">She Was Always Going To <em>Make It.</em></h1>
+      <div class="divider"></div>
+
+      <div class="final-letter">
+        <p>
+          I made this because you are having a bad day.<br><br>
+          And on bad days the true things get harder to see.<br><br>
+          So here are the true things.<br><br>
+          <strong>You are not going to become a number.</strong><br>
+          You are not going to be another person who had a dream and quietly let it go.<br>
+          That is simply not who you are.<br><br>
+          You are the woman who shows up for her child without fail.<br>
+          You are the woman with the big beautiful eyes who sees more than she ever says.<br>
+          You are the woman who has been carrying a dream alone — without a map, without enough reassurance — and has never once put it down.<br><br>
+          <em>That woman does not end up a number.<br>
+          That woman ends up standing in a green Irish field wondering why she ever doubted herself.</em><br><br>
+          <strong>You are seen.<br>
+          You are more than enough.<br>
+          And someone who means it is telling you that.</strong>
+        </p>
+      </div>
+
+      <div class="stamp-ireland">Ireland Bound 🍀</div>
+      <div class="divider"></div>
+      <p class="signature">— Your guy 🍀</p>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const TOTAL = 10;
+let cur = 1;
+
+function go(n) {
+  document.getElementById('page' + cur).classList.remove('active');
+  cur = n;
+  document.getElementById('page' + n).classList.add('active');
+  render();
+  window.scrollTo(0, 0);
+}
+
+function render() {
+  for (let i = 1; i <= TOTAL; i++) {
+    const el = document.getElementById('p' + i);
+    if (!el) continue;
+    el.innerHTML = '';
+    for (let j = 1; j <= TOTAL; j++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (j < i ? ' done' : j === i ? ' active' : '');
+      el.appendChild(d);
+    }
+  }
+}
+
+function floaters() {
+  const c = document.getElementById('floaters');
+  ['🍀','☘️','🌿','🌱'].forEach(e => {
+    for (let i = 0; i < 4; i++) {
+      const el = document.createElement('div');
+      el.className = 'floater';
+      el.textContent = e;
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (9 + Math.random() * 12) + 's';
+      el.style.animationDelay = (Math.random() * 12) + 's';
+      el.style.fontSize = (10 + Math.random() * 14) + 'px';
+      c.appendChild(el);
+    }
+  });
+}
+
+render();
+floaters();
+</script>
+</body>
+</html>
